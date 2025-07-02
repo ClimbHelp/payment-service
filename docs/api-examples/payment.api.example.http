@@ -1,0 +1,104 @@
+### Service de Paiement - Exemples d'API
+
+### 1. Vérifier la santé du service
+GET http://localhost:3004/health
+
+### 2. Créer un Payment Intent
+POST http://localhost:3004/api/payments/payment-intents
+Content-Type: application/json
+
+{
+  "amount": 2000,
+  "currency": "eur",
+  "payment_method_types": ["card"],
+  "description": "Paiement pour service d'escalade",
+  "metadata": {
+    "order_id": "12345",
+    "user_id": "user_123"
+  }
+}
+
+### 3. Récupérer un Payment Intent
+GET http://localhost:3004/api/payments/payment-intents/pi_1234567890
+
+### 4. Confirmer un paiement
+POST http://localhost:3004/api/payments/payment-intents/pi_1234567890/confirm
+Content-Type: application/json
+
+{
+  "paymentMethodId": "pm_1234567890"
+}
+
+### 5. Annuler un paiement
+POST http://localhost:3004/api/payments/payment-intents/pi_1234567890/cancel
+
+### 6. Webhook Stripe (pour les tests)
+POST http://localhost:3004/api/payments/webhooks
+Content-Type: application/json
+Stripe-Signature: whsec_test_signature
+
+{
+  "id": "evt_test_webhook",
+  "object": "event",
+  "api_version": "2023-10-16",
+  "created": 1234567890,
+  "data": {
+    "object": {
+      "id": "pi_1234567890",
+      "object": "payment_intent",
+      "amount": 2000,
+      "currency": "eur",
+      "status": "succeeded"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": "req_test",
+    "idempotency_key": null
+  },
+  "type": "payment_intent.succeeded"
+}
+
+### 7. Exemple avec montant en centimes (20€)
+POST http://localhost:3004/api/payments/payment-intents
+Content-Type: application/json
+
+{
+  "amount": 2000,
+  "currency": "eur",
+  "payment_method_types": ["card"],
+  "description": "Abonnement mensuel",
+  "metadata": {
+    "subscription_type": "monthly",
+    "user_id": "user_456"
+  }
+}
+
+### 8. Exemple avec différentes devises
+POST http://localhost:3004/api/payments/payment-intents
+Content-Type: application/json
+
+{
+  "amount": 2500,
+  "currency": "usd",
+  "payment_method_types": ["card"],
+  "description": "Paiement en dollars",
+  "metadata": {
+    "order_id": "67890"
+  }
+}
+
+### 9. Exemple avec plusieurs méthodes de paiement
+POST http://localhost:3004/api/payments/payment-intents
+Content-Type: application/json
+
+{
+  "amount": 1500,
+  "currency": "eur",
+  "payment_method_types": ["card", "sepa_debit"],
+  "description": "Paiement flexible",
+  "metadata": {
+    "order_id": "11111"
+  }
+} 
