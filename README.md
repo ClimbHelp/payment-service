@@ -133,7 +133,7 @@ GET /health
 src/
 ├── config/
 │   ├── env.ts          # Configuration des variables d'environnement
-│   └── logger.ts       # Configuration des logs
+│   └── logger.ts       # Configuration des log
 ├── controllers/
 │   └── payment.controller.ts  # Contrôleurs pour les routes
 ├── middleware/
