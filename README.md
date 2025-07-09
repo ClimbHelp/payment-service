@@ -2,6 +2,12 @@
 
 Service de paiement microservice utilisant TypeScript et Stripe pour gérer les transactions de paiement.
 
+## 📹 Démonstration
+
+[![Démonstration du Service de Paiement](https://img.youtube.com/vi/LsiL8Ni587s/0.jpg)](https://youtu.be/LsiL8Ni587s)
+
+*Cliquez sur l'image pour voir la démonstration vidéo*
+
 ## 🚀 Fonctionnalités
 
 - Création de Payment Intents Stripe
