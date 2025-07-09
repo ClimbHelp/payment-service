@@ -155,11 +155,28 @@ export const handleWebhook = async (req: Request, res: Response) => {
     });
 
     switch (event.type) {
-      case 'payment_intent.succeeded':
+      case 'payment_intent.succeeded': {
         logger.info('Payment succeeded', { 
           paymentIntentId: event.data.object.id 
         });
+        // Récupérer userId depuis le metadata du PaymentIntent
+        const userId = event.data.object.metadata?.userId;
+        if (userId) {
+          try {
+            await fetch(`http://localhost:3003/api/users/${userId}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ premium: true })
+            });
+            logger.info('User premium updated', { userId });
+          } catch (err) {
+            logger.error('Error updating user premium', { error: err, userId });
+          }
+        } else {
+          logger.warn('No userId in payment metadata, cannot update premium');
+        }
         break;
+      }
         
       case 'payment_intent.payment_failed':
         logger.warn('Payment failed', { 
@@ -177,7 +194,7 @@ export const handleWebhook = async (req: Request, res: Response) => {
         logger.info('Unhandled event type', { type: event.type });
     }
 
-    res.json({ received: true });
+    return res.json({ received: true });
   } catch (error) {
     logger.error('Webhook error', { error });
     return res.status(400).json({ error: 'Webhook signature verification failed' });

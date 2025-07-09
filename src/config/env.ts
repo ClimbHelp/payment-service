@@ -4,7 +4,7 @@ dotenv.config();
 
 export const config = {
   server: {
-    port: process.env.PORT || 3004,
+    port: process.env.PORT || 3009,
     nodeEnv: process.env.NODE_ENV || 'development',
   },
   stripe: {

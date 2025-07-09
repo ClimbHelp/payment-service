@@ -31,18 +31,24 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// Middleware pour parser le JSON
-app.use(express.json({ limit: '10mb' }));
-
 // Middleware pour les webhooks Stripe (raw body)
 app.use('/api/payments/webhooks', express.raw({ type: 'application/json' }));
+
+// Middleware pour parser le JSON (toutes les autres routes)
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith('/api/payments/webhooks')) {
+    next(); // ne pas parser en JSON pour les webhooks
+  } else {
+    express.json({ limit: '10mb' })(req, res, next);
+  }
+});
 
 // Routes
 app.use('/api/payments', paymentRoutes);
 
 // Route de santé
 app.get('/health', (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Payment service is running',
     timestamp: new Date().toISOString(),
@@ -52,7 +58,7 @@ app.get('/health', (req, res) => {
 
 // Route par défaut
 app.get('/', (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     message: 'Payment Service API',
     version: '1.0.0',
@@ -67,7 +73,7 @@ app.get('/', (req, res) => {
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   logger.error('Unhandled error', { error: err.message, stack: err.stack });
   
-  res.status(500).json({
+  return res.status(500).json({
     success: false,
     error: {
       message: 'Internal server error',
@@ -78,7 +84,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
 // Middleware pour les routes non trouvées
 app.use('*', (req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     success: false,
     error: {
       message: 'Route not found',

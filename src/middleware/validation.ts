@@ -28,7 +28,7 @@ export const validateCreatePaymentIntent = (req: Request, res: Response, next: N
     });
   }
 
-  next();
+  return next();
 };
 
 export const validatePaymentIntentId = (req: Request, res: Response, next: NextFunction) => {
@@ -53,7 +53,7 @@ export const validatePaymentIntentId = (req: Request, res: Response, next: NextF
     });
   }
 
-  next();
+  return next();
 };
 
 export const validateConfirmPayment = (req: Request, res: Response, next: NextFunction) => {
@@ -83,5 +83,5 @@ export const validateConfirmPayment = (req: Request, res: Response, next: NextFu
     });
   }
 
-  next();
+  return next();
 }; 
