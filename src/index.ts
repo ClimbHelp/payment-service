@@ -49,8 +49,8 @@ app.use('/api/payments', paymentRoutes);
 // Route de santé
 app.get('/health', (req, res) => {
   return res.status(200).json({
-    success: true,
-    message: 'Payment service is running',
+    status: "OK",
+    service: "payment-service",
     timestamp: new Date().toISOString(),
     environment: config.server.nodeEnv,
   });
